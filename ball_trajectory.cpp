@@ -20,7 +20,7 @@ struct Pointss{
 };
 
 // fonction 1
-/**Pointss generPoint(int d, float v ,float dt,  float omega )
+Pointss generPoint(int d, float v ,float dt,  float omega )
 {   Pointss pInit ;
 
    pInit.x[0] = 0;
@@ -37,7 +37,7 @@ struct Pointss{
 	  
 		}return pInit;
 	
-}**/
+}
 
 
 char * strtoupper( char * dest, const char * src ) {
@@ -109,13 +109,10 @@ sphere_list.color.r = 1.0f;
 sphere_list.color.a = 1.0;
 // Create the vertices for the points and lines
 
-// la boucle de omega par rapport aux nmbrs de trajectoire 	 	 
+// la boucle de omega par rapport aux nmbrs de trajectoire 	 	
+	 geometry_msgs::Point p;
 i=(-(n-1)/2);
-Pointss pInit ;
-pInit.x[0] = 0;
-pInit.y [0]= 0;
-pInit.theta[0] = 0*(PI/180) ;
-geometry_msgs::Point p;
+
 	 while  (uint32_t i<=(n-1)/2) {
 	 
 
@@ -123,36 +120,24 @@ geometry_msgs::Point p;
 	
 	
 	
-// pour chaque omega un nmbr h de point generer 
-                  printf("\n");
-                	printf(" Avec une vitesse angulaire Omega = %f :\n  ", omega);
-	  
 
-   
-	   	for(int h=0 ;h<((d/v)/dt);h++){
-		 
-	        pInit.x[h+1]=pInit.x[h]-v*dt* sin(pInit.theta[h]+(dt*omega)/2);
-	      	pInit.y[h+1]=pInit.y[h]+v*dt* cos(pInit.theta[h]+(dt*omega)/2);
-	    	pInit.theta[h+1]=pInit.theta[h]+dt*omega;
-	   	
-		   printf("Position du point: x:  %f\t y: %f\t z:  %f\t  \n" ,pInit.x[h+1],pInit.y[h+1],pInit.theta[h+1]);
-		    p.x = pnt.x[i];
-           p.y = pnt.y[i];
-           p.z = pnt.theta[i];  
-            sphere_list.points.push_back(p);
-             marker_pub.publish(sphere_list);
-           }
 		
-	   //pnt=generPoint( d,  v , dt,  omega );
+	   pnt=generPoint( d,  v , dt,  omega );
 	  
 	    
 	i++;
 	
-	   
+	  
+          p.x = pnt.x[i];
+          p.y = pnt.y[i];
+          p.z = pnt.theta[i];
+          sphere_list.points.push_back(p);
 	  
       
 	
 	 }
+	
+	marker_pub.publish(sphere_list);
 	
 /**for (uint32_t i = 0; i < 25; ++i)
 {
