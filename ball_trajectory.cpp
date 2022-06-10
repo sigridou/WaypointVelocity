@@ -113,7 +113,7 @@ sphere_list.color.a = 1.0;
 	 geometry_msgs::Point p;
 i=(-(n-1)/2);
 
-	 while  (uint32_t i<=(n-1)/2) {
+	 while  ( i<=(n-1)/2) {
 	 
 
 	 omega= (((0.8/n)/dt)*i);   //omerga calculer avec deltaFi(l'angle entre les trajectoires)
