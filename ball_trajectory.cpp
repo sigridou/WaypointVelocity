@@ -13,19 +13,7 @@
 #include <iostream>
 
 
-class Pointm {
-public:
-	double xt, yt, zt, vl, va;
 
-	Pointm(double xt, double yt, double zt, double vl, double va) {
-		this->xt = xt;
-		this->yt = yt;
-		this->zt = zt;
-		this->vl = vl;
-		this->va = va;
-
-	};
-};
 
 
 struct Pointss{
@@ -37,7 +25,7 @@ struct Pointss{
 
 // fonction 1
 //**Pointss generPoint(int d, float v ,float dt,  float omega )
-{   Pointss pInit ;
+/*{   Pointss pInit ;
 
    pInit.x[0] = 0;
     pInit.y [0]= 0;
@@ -54,7 +42,7 @@ struct Pointss{
 		}return pInit;
 	
 }
-**//
+**/
 
 char * strtoupper( char * dest, const char * src ) {
     char * result = dest;
@@ -80,7 +68,7 @@ while (ros::ok())
 	const float pi =  3.14159265358979323846;
 	struct Pointss pInit ; //point, pointFinal;
 	int n,d,q,i,k,j,a;   //le nombre de trajectoire
-	int b=0;
+	
      d=1;    // la distance en metre 
     float deltafi_av,deltafi_dg,omega,omegaa, dt,v; // les parametres
   
@@ -94,8 +82,8 @@ while (ros::ok())
  n=7;
 printf("Pour une trajectoire avec n=7 points on a :\n");
 printf("Vitesse lineaire = 0.2m/s et un temps de deplacement delta t = 2s\n");
-v=0.2;
-dt=2;
+v=0.27;
+dt=0.6;
 
 
 //les zone definit pour les commande (radian)	 
@@ -116,9 +104,9 @@ sphere_list.id = 0;
 
 sphere_list.type = visualization_msgs::Marker::SPHERE_LIST;
 // POINTS markers use x and y scale for width/height respectively
-sphere_list.scale.x = 0.1;
-sphere_list.scale.y = 0.1;
-sphere_list.scale.z = 0.1;
+sphere_list.scale.x = 0.03;
+sphere_list.scale.y = 0.03;
+sphere_list.scale.z = 0.03;
 
 // Points are green
 sphere_list.color.r = 1.0f;
@@ -126,13 +114,16 @@ sphere_list.color.a = 1.0;
 // Create the vertices for the points and lines
 
 // la boucle de omega par rapport aux nmbrs de trajectoire 	 	
-	 geometry_msgs::Point p;
+	 geometry_msgs::Point p, ps;
+         ps.x=0;
+         ps.y=0;
+         ps.z=0;
+         sphere_list.points.push_back(ps);
+     
 	pInit.x[0] = 0;
     pInit.y [0]= 0;
     pInit.theta[0] = 0*(PI/180) ;
-    vec[0][0].xt=0;
-    vec[0][0].yt=0;
-    vec[0][0].zt=0;
+   
 i=(-(n-1)/2);
 
 	 while  ( i<=(n-1)/2) {
@@ -147,23 +138,21 @@ i=(-(n-1)/2);
 	   //pnt=generPoint( d,  v , dt,  omega );
 		 for(int h=0 ;h<((d/v)/dt);h++){
 		 	 
-		 	 b=h;
+		 	 
 		  
       	
 		   
 	        pInit.x[h+1]=pInit.x[h]-v*dt* sin(pInit.theta[h]+(dt*omega)/2);
 	     	pInit.y[h+1]=pInit.y[h]+v*dt* cos(pInit.theta[h]+(dt*omega)/2);
 	      	pInit.theta[h+1]=pInit.theta[h]+dt*omega;
-	      	vec[i][b].xt=pInit.x[h+1];
-	      	vec[i][b].yt=pInit.y[h+1];
-	      	vec[i][b].zt=pInit.theta[h+1];
-			  p.x = pnt.x[i];
-                          p.y = pnt.y[i];
-                          p.z = pnt.theta[i];
-                         sphere_list.points.push_back(p);
+	    
+			  p.x = pInit.x[h+1];
+              p.y = pInit.y[h+1];
+              p.z = 0;
+              sphere_list.points.push_back(p);
+              
 		 }
 	      
-	  
 	    
 	
 
@@ -193,4 +182,6 @@ r.sleep();
 f += 0.04;
 }
 }
+
+
 
