@@ -12,6 +12,22 @@
  #include <ros/console.h>
 #include <iostream>
 
+
+class Pointm {
+public:
+	double xt, yt, zt, vl, va;
+
+	Pointm(double xt, double yt, double zt, double vl, double va) {
+		this->xt = xt;
+		this->yt = yt;
+		this->zt = zt;
+		this->vl = vl;
+		this->va = va;
+
+	};
+};
+
+
 struct Pointss{
   float x[100];
   float y[100];
@@ -20,7 +36,7 @@ struct Pointss{
 };
 
 // fonction 1
-Pointss generPoint(int d, float v ,float dt,  float omega )
+//**Pointss generPoint(int d, float v ,float dt,  float omega )
 {   Pointss pInit ;
 
    pInit.x[0] = 0;
@@ -38,7 +54,7 @@ Pointss generPoint(int d, float v ,float dt,  float omega )
 		}return pInit;
 	
 }
-
+**//
 
 char * strtoupper( char * dest, const char * src ) {
     char * result = dest;
@@ -64,7 +80,7 @@ while (ros::ok())
 	const float pi =  3.14159265358979323846;
 	struct Pointss pInit ; //point, pointFinal;
 	int n,d,q,i,k,j,a;   //le nombre de trajectoire
-	
+	int b=0;
      d=1;    // la distance en metre 
     float deltafi_av,deltafi_dg,omega,omegaa, dt,v; // les parametres
   
@@ -111,6 +127,12 @@ sphere_list.color.a = 1.0;
 
 // la boucle de omega par rapport aux nmbrs de trajectoire 	 	
 	 geometry_msgs::Point p;
+	pInit.x[0] = 0;
+    pInit.y [0]= 0;
+    pInit.theta[0] = 0*(PI/180) ;
+    vec[0][0].xt=0;
+    vec[0][0].yt=0;
+    vec[0][0].zt=0;
 i=(-(n-1)/2);
 
 	 while  ( i<=(n-1)/2) {
@@ -122,19 +144,32 @@ i=(-(n-1)/2);
 	
 
 		
-	   pnt=generPoint( d,  v , dt,  omega );
+	   //pnt=generPoint( d,  v , dt,  omega );
+		 for(int h=0 ;h<((d/v)/dt);h++){
+		 	 
+		 	 b=h;
+		  
+      	
+		   
+	        pInit.x[h+1]=pInit.x[h]-v*dt* sin(pInit.theta[h]+(dt*omega)/2);
+	     	pInit.y[h+1]=pInit.y[h]+v*dt* cos(pInit.theta[h]+(dt*omega)/2);
+	      	pInit.theta[h+1]=pInit.theta[h]+dt*omega;
+	      	vec[i][b].xt=pInit.x[h+1];
+	      	vec[i][b].yt=pInit.y[h+1];
+	      	vec[i][b].zt=pInit.theta[h+1];
+			  p.x = pnt.x[i];
+                          p.y = pnt.y[i];
+                          p.z = pnt.theta[i];
+                         sphere_list.points.push_back(p);
+		 }
+	      
 	  
 	    
-	i++;
 	
-	  
-          p.x = pnt.x[i];
-          p.y = pnt.y[i];
-          p.z = pnt.theta[i];
-          sphere_list.points.push_back(p);
+
 	  
       
-	
+	i++;
 	 }
 	
 	marker_pub.publish(sphere_list);
