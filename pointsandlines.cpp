@@ -14,6 +14,19 @@
 
 
 
+class Pointm {
+public:
+	float xt, yt, zt, vl, va;
+
+	Pointm(float xt, float yt, float zt, float vl, float va) {
+		this->xt = xt;
+		this->yt = yt;
+		this->zt = zt;
+		this->vl = vl;
+		this->va = va;
+
+	};
+};
 
 
 struct Pointss{
@@ -58,6 +71,8 @@ ros::Rate r(30);
 float f = 0.0;
 while (ros::ok())
 { 
+   Pointm pt(0, 0, 0, 0, 0);
+   Pointm vec[10][10] = { {pt,pt,pt,pt,pt,pt,pt,pt,pt,pt} , {pt,pt,pt,pt,pt,pt,pt,pt,pt,pt},{pt,pt,pt,pt,pt,pt,pt,pt,pt,pt},{pt,pt,pt,pt,pt,pt,pt,pt,pt,pt},{pt,pt,pt,pt,pt,pt,pt,pt,pt,pt},{pt,pt,pt,pt,pt,pt,pt,pt,pt,pt},{pt,pt,pt,pt,pt,pt,pt,pt,pt,pt},{pt,pt,pt,pt,pt,pt,pt,pt,pt,pt},{pt,pt,pt,pt,pt,pt,pt,pt,pt,pt},{pt,pt,pt,pt,pt,pt,pt,pt,pt,pt}};
 
    struct Pointss pnt;
 
@@ -96,7 +111,6 @@ sphere_list.header.stamp= line_strip.header.stamp = ros::Time::now();
 sphere_list.ns= line_strip.ns = "spheres";
 sphere_list.action=line_strip.action =  visualization_msgs::Marker::ADD;
 sphere_list.pose.orientation.w=1.0;
-line_strip.pose.orientation.w=0;
 
 sphere_list.id = 0;
 line_strip.id = 1;
@@ -118,57 +132,103 @@ line_strip.color.a = 1.0;
 // Create the vertices for the points and lines
 
 // la boucle de omega par rapport aux nmbrs de trajectoire 	 	
-	 geometry_msgs::Point p;
+	geometry_msgs::Point p;
+        geometry_msgs::Point pg;
+        geometry_msgs::Point pl;
+        
          
         
-
+    pInit.x[0] = 0;
+    pInit.y [0]= 0;
+    pInit.theta[0] = 0*(PI/180) ;
+    int cptl=0;
+    int cptc=0;
+    
 i=(-(n-1)/2);
-
+int cpts=1;
 	 while  ( i<=(n-1)/2) {
 	 
 
-	 omega= (((0.8/n)/dt)*i);   //omerga calculer avec deltaFi(l'angle entre les trajectoires)
+	 omega= (((0.8/n)/dt)*i);   //omega calculer avec deltaFi(l'angle entre les trajectoires)
 	
-	
-	
+	    printf("\n");
+            printf("Avec une vitesse angulaire Omega=%f: \n ", omega);
+	     
 
-		
+	     int b=0;
 	   //pnt=generPoint( d,  v , dt,  omega );
 		 for(int h=0 ;h<((d/v)/dt);h++){
 		 	 
-		 	 if (h==0)
-		  {
-           
-                      pInit.x[0] = 0;
-                        pInit.y [0]= 0;
-                        pInit.theta[0] = 0*(PI/180) ;
-                        sphere_list.points.push_back(p);
-                    line_strip.points.push_back(p);
-                  }else{
+		 
+                       b=h;
+                        //sphere_list.points.push_back(p);
+                        //line_strip.points.push_back(p);
+                  
       	
 		   	
-   
-	        pInit.x[h+1]=pInit.x[h]-v*dt* sin(pInit.theta[h]+(dt*omega)/2);
+                pInit.x[h+1]=pInit.x[h]-v*dt* sin(pInit.theta[h]+(dt*omega)/2);
 	     	pInit.y[h+1]=pInit.y[h]+v*dt* cos(pInit.theta[h]+(dt*omega)/2);
 	      	pInit.theta[h+1]=pInit.theta[h]+dt*omega;
-	       
-	              p.x = pInit.x[h+1];
-                      p.y = pInit.y[h+1];
+	    
+                vec[cpts][h+1].xt=pInit.x[h+1];
+	      	vec[cpts][h+1].yt=pInit.y[h+1];	
+	      	vec[cpts][h+1].zt=pInit.theta[h+1];
+	        
+	  
+	 	
+	    	printf("Position du point: x:  %f\t y: %f\t z:  %f\t  \n", vec[cpts][h+1].xt,vec[cpts][h+1].yt,vec[cpts][h+1].zt);
+                    /**  p.x = vec[cpts][h+1].xt;
+                      p.y = vec[cpts][h+1].yt;
                       p.z = 0;
-                    sphere_list.points.push_back(p);
-                    line_strip.points.push_back(p);
-                   }
+                      sphere_list.points.push_back(p);**/
+	        cptc=h;
+	           
+                   
                  
 		 }
 	     
-
+          cpts++;
+          cptl=cpts;
 	  
       
 	i++;
-	 }
+        
+	 } //marker_pub.publish(sphere_list);
+
+
+          
+
+
+
+
+      int ii,jj;
+     
+          for(ii=0;ii<=6;ii++)
+          {
+
+                 for (jj=0;jj<=6;jj++)
+               {      p.x = vec[ii][jj].xt;
+                      p.y = vec[ii][jj].yt;
+                      p.z = 0;
+                      
+                      sphere_list.points.push_back(p);
+                      line_strip.points.push_back(p);
+                      
+
+
+               }
+                      
+      
+               
+            }marker_pub.publish(sphere_list);
+	               marker_pub.publish(line_strip);
+              
+
+           
+                   
+      
 	
-	marker_pub.publish(sphere_list);
-	marker_pub.publish(line_strip);
+	
 /**for (uint32_t i = 0; i < 25; ++i)
 {
 float y = sin(f + i / 100.0f * 2 * M_PI);
