@@ -62,7 +62,7 @@ def take_action(regions):
       linear_x=0.5
       angular_z=0
     else 
-      linear_x=
+      linear_x=0
       angular_z=0.4
       
     
@@ -70,7 +70,7 @@ def take_action(regions):
     
       
  
-  elif regions['front'] < threshold_dist and regions['left'] < threshold_dist and regions['right'] < threshold_dist:
+""" elif regions['front'] < threshold_dist and regions['left'] < threshold_dist and regions['right'] < threshold_dist:
     state_description = 'case 7 - front and left and right'
     linear_x = -linear_speed
     angular_z = angular_speed # Increase this angular speed for avoiding obstacle faster
@@ -100,7 +100,7 @@ def take_action(regions):
     angular_z = 0
   else:
     state_description = 'unknown case'
-    rospy.loginfo(regions)
+    rospy.loginfo(regions)"""
 
   rospy.loginfo(state_description)
   msg.linear.x = linear_x
