@@ -15,7 +15,7 @@ def callback(msg):
    global b 
    global theta
    a=msg.pose.pose.position.x
-   b=msg.pose.pose.position.y
+   b=msg.pose.pose.position.y #Fonction pour avoir la position actuel du robot meme apres un deplacement - donnees odometriques
    theta=atan(b/a)
   
    
@@ -58,7 +58,7 @@ def take_action(regions):
   if regions['front'] > threshold_dist and regions['left'] > threshold_dist and regions['right'] > threshold_dist:
     state_description = 'case 1 - no obstacle'
     
-    if theta <= angle :
+    if theta <= angle : # tu dois trouver la bonne orientation et jouer sur cette angle
       linear_x=0.5
       angular_z=0
     else 
